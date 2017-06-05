@@ -1,43 +1,73 @@
 package org.caworks.clockoff.entity.greendao;
 
+import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 /**
- * 习惯打卡 bean
+ * 打卡 bean
  * Created by gallon on 2017/6/4
  */
+@Entity
 public class ClockOffBean {
-    public static final String divider = "DIVIDER";
+    public static final String DIVIDER = "##";
     @Id(autoincrement = true)
     private Long id;
-    private String answer;
-    private String question;
-    private String similarQuestion;
-    private int type; // (type=3 聊天)
-    public int getType() {
-        return this.type;
+    private String name; //名称
+    private String desc; //描述(含补卡)
+    private String note; //备注(尽量不用)
+    private String start; //开始时间 170223
+    private String remind; //提醒时间 0#1##123 [0]开关 [1]一周内天数 [2]一天内时间
+    private String record; //完成日期记录(含补卡) 0170223#1170224 首位数0补卡 1完成
+    private int complete; //完成次数(含补卡)
+    private int repair; //补卡次数
+    public int getRepair() {
+        return this.repair;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setRepair(int repair) {
+        this.repair = repair;
     }
-    public String getSimilarQuestion() {
-        return this.similarQuestion;
+    public int getComplete() {
+        return this.complete;
     }
-    public void setSimilarQuestion(String similarQuestion) {
-        this.similarQuestion = similarQuestion;
+    public void setComplete(int complete) {
+        this.complete = complete;
     }
-    public String getQuestion() {
-        return this.question;
+    public String getRecord() {
+        return this.record;
     }
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setRecord(String record) {
+        this.record = record;
     }
-    public String getAnswer() {
-        return this.answer;
+    public String getRemind() {
+        return this.remind;
     }
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setRemind(String remind) {
+        this.remind = remind;
+    }
+    public String getStart() {
+        return this.start;
+    }
+    public void setStart(String start) {
+        this.start = start;
+    }
+    public String getNote() {
+        return this.note;
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public String getDesc() {
+        return this.desc;
+    }
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+    public String getName() {
+        return this.name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
     public Long getId() {
         return this.id;
@@ -45,16 +75,20 @@ public class ClockOffBean {
     public void setId(Long id) {
         this.id = id;
     }
-    @Generated(hash = 892143451)
-    public ClockOffBean(Long id, String answer, String question,
-                        String similarQuestion, int type) {
+    @Generated(hash = 38730133)
+    public ClockOffBean(Long id, String name, String desc, String note,
+            String start, String remind, String record, int complete, int repair) {
         this.id = id;
-        this.answer = answer;
-        this.question = question;
-        this.similarQuestion = similarQuestion;
-        this.type = type;
+        this.name = name;
+        this.desc = desc;
+        this.note = note;
+        this.start = start;
+        this.remind = remind;
+        this.record = record;
+        this.complete = complete;
+        this.repair = repair;
     }
-    @Generated(hash = 1413326856)
+    @Generated(hash = 1776049650)
     public ClockOffBean() {
     }
 }

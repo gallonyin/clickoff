@@ -2,7 +2,6 @@ package org.caworks.library.util.imageLoader;
 
 import android.content.Context;
 
-import com.aegis.mobile.library.util.util.GLog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.DecodeFormat;
@@ -11,6 +10,8 @@ import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.GlideModule;
+
+import org.caworks.library.util.GLog;
 
 /**
  *  1.Glide设置本地缓存图片所占空间限制

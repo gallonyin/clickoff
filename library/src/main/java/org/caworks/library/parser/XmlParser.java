@@ -2,7 +2,7 @@ package org.caworks.library.parser;
 
 import android.util.Log;
 
-import com.aegis.mobile.library.util.util.GLog;
+import org.caworks.library.util.GLog;
 
 import java.io.StringReader;
 import java.io.StringWriter;

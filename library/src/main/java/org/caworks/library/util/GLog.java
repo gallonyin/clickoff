@@ -3,11 +3,11 @@ package org.caworks.library.util;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.aegis.mobile.library.util.parser.BaseParser;
-import com.aegis.mobile.library.util.parser.FileParser;
-import com.aegis.mobile.library.util.parser.JsonParser;
-import com.aegis.mobile.library.util.parser.ObjParser;
-import com.aegis.mobile.library.util.parser.XmlParser;
+import org.caworks.library.parser.BaseParser;
+import org.caworks.library.parser.FileParser;
+import org.caworks.library.parser.JsonParser;
+import org.caworks.library.parser.ObjParser;
+import org.caworks.library.parser.XmlParser;
 
 import java.io.File;
 

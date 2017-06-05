@@ -2,20 +2,12 @@ package org.caworks.clockoff.entity.greendao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.info.aegis.lawpush4android.utils.Constant;
-import com.info.aegis.lawpush4android.utils.MyLog;
-
+import org.caworks.library.util.GLog;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import static com.info.aegis.lawpush4android.model.bean.greendao.NativeQuestionBean.divider;
-import static com.info.aegis.lawpush4android.utils.PublicMethod.newRandom;
 
 /**
  * 数据库管理器
@@ -23,15 +15,15 @@ import static com.info.aegis.lawpush4android.utils.PublicMethod.newRandom;
  * <p>
  * NOTE: 如需执行原生sql语句 getWritableDatabase().execSQL(sql)
  * <p>
- * Created by gallon on 2017/4/17.
+ * Created by gallon on 2017/6/4
  */
 
 public class DBManager {
     private static DBManager mInstance;
-    public static final String DB_NAME = "law_push.db";
+    private static final String DB_NAME = "clock_off.db";
     private DaoMaster.DevOpenHelper openHelper;
     private Context context;
-    private NativeQuestionBeanDao nativeQuestionBeanDao;
+    private ClockOffBeanDao clockOffBeanDao;
 
     private DBManager(Context context) {
         this.context = context;
@@ -50,138 +42,138 @@ public class DBManager {
     }
 
     /**
-     * 插入NativeQuestionBean (插入/插入集合 可以先查询 如果有就更新.. 待续)
+     * 插入clockOffBean (插入/插入集合 可以先查询 如果有就更新.. 待续)
      * @param isCheckUpdate 是否在插入时检查已存在，true做更新操作，false做插入操作
      * @return bean为空 -1 ; 更新操作 -2 ; otherwise 影响行数
      */
-    public long insertNativeQuestionBean(NativeQuestionBean nativeQuestionBean, boolean isCheckUpdate) {
-        if (nativeQuestionBean == null) {
+    public long insertClockOffBean(ClockOffBean clockOffBean, boolean isCheckUpdate) {
+        if (clockOffBean == null) {
             return -1;
         }
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-//        MyLog.e("DBManager", "nativeQuestionBean.getSimilarQuestion(): " + nativeQuestionBean.getSimilarQuestion());
-        if (isCheckUpdate) {
-            List<NativeQuestionBean> nativeQuestionBeans = nativeQuestionBeanDao.queryBuilder().where(NativeQuestionBeanDao.Properties.SimilarQuestion.eq(nativeQuestionBean.getSimilarQuestion())).build().list();
-            if (nativeQuestionBeans.size() > 0) {
-                NativeQuestionBean oldNativeQuestionBean = nativeQuestionBeans.get(0);
-                oldNativeQuestionBean.setAnswer(nativeQuestionBean.getAnswer());
-                oldNativeQuestionBean.setQuestion(nativeQuestionBean.getQuestion());
-                oldNativeQuestionBean.setSimilarQuestion(nativeQuestionBean.getSimilarQuestion());
-                oldNativeQuestionBean.setType(nativeQuestionBean.getType());
-                nativeQuestionBeanDao.update(oldNativeQuestionBean);
-                return -2;
-            }
-        }
-        return nativeQuestionBeanDao.insert(nativeQuestionBean);
+//        GLog.e("DBManager", "clockOffBean.getSimilarQuestion(): " + clockOffBean.getSimilarQuestion());
+//        if (isCheckUpdate) {
+//            List<ClockOffBean> clockOffBeanList = clockOffBeanDao.queryBuilder().where(ClockOffBeanDao.Properties.SimilarQuestion.eq(clockOffBean.getSimilarQuestion())).build().list();
+//            if (clockOffBeanList.size() > 0) {
+//                ClockOffBean oldClockOffBean = clockOffBeanList.get(0);
+//                oldClockOffBean.setAnswer(clockOffBean.getAnswer());
+//                oldClockOffBean.setQuestion(clockOffBean.getQuestion());
+//                oldClockOffBean.setSimilarQuestion(clockOffBean.getSimilarQuestion());
+//                oldClockOffBean.setType(clockOffBean.getType());
+//                clockOffBeanDao.update(oldClockOffBean);
+//                return -2;
+//            }
+//        }
+        return clockOffBeanDao.insert(clockOffBean);
     }
 
     /**
-     * 插入NativeQuestionBean集合
+     * 插入clockOffBean集合
      * @param isCheckUpdate 是否在插入时检查已存在，true做更新操作，false做插入操作
      */
-    public void insertNativeQuestionBeanList(List<NativeQuestionBean> nativeQuestionBeanList, boolean isCheckUpdate) {
-        if (nativeQuestionBeanList == null || nativeQuestionBeanList.isEmpty()) {
+    public void insertclockOffBeanList(List<ClockOffBean> clockOffBeanList, boolean isCheckUpdate) {
+        if (clockOffBeanList == null || clockOffBeanList.isEmpty()) {
             return;
         }
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-        if (isCheckUpdate) {
-            List<NativeQuestionBean> insertList = new ArrayList<>();
-            List<NativeQuestionBean> updateList = new ArrayList<>();
-            List<NativeQuestionBean> nativeQuestionBeans = nativeQuestionBeanDao.queryBuilder().build().list();
-            for (NativeQuestionBean nativeQuestionBean : nativeQuestionBeanList) {
-                int i;
-                for (i = 0; i < nativeQuestionBeans.size(); i++) {
-                    if (nativeQuestionBean.getSimilarQuestion().equals(nativeQuestionBeans.get(i).getSimilarQuestion())) {
-                        NativeQuestionBean oldNativeQuestionBean = nativeQuestionBeans.get(i);
-                        oldNativeQuestionBean.setAnswer(nativeQuestionBean.getAnswer());
-                        oldNativeQuestionBean.setQuestion(nativeQuestionBean.getQuestion());
-                        oldNativeQuestionBean.setSimilarQuestion(nativeQuestionBean.getSimilarQuestion());
-                        oldNativeQuestionBean.setType(nativeQuestionBean.getType());
-                        updateList.add(oldNativeQuestionBean);
-                        break;
-                    }
-                }
-                if (i == nativeQuestionBeans.size()) {
-                    insertList.add(nativeQuestionBean);
-                }
-            }
-            if (insertList.size() > 0) {
-                MyLog.e("DBManager", "insertList.size(): "+ insertList.size());
-                nativeQuestionBeanDao.insertInTx(insertList);
-            }
-            if (updateList.size() > 0) {
-                MyLog.e("DBManager", "updateList.size(): "+ updateList.size());
-                nativeQuestionBeanDao.updateInTx(updateList);
-            }
-        } else {
-            nativeQuestionBeanDao.insertInTx(nativeQuestionBeanList);
-        }
+//        if (isCheckUpdate) {
+//            List<ClockOffBean> insertList = new ArrayList<>();
+//            List<ClockOffBean> updateList = new ArrayList<>();
+//            List<ClockOffBean> clockOffBeans = clockOffBeanDao.queryBuilder().build().list();
+//            for (ClockOffBean clockOffBean : clockOffBeanList) {
+//                int i;
+//                for (i = 0; i < clockOffBeans.size(); i++) {
+//                    if (clockOffBean.getSimilarQuestion().equals(clockOffBeans.get(i).getSimilarQuestion())) {
+//                        ClockOffBean oldClockOffBean = clockOffBeans.get(i);
+//                        oldClockOffBean.setAnswer(clockOffBean.getAnswer());
+//                        oldClockOffBean.setQuestion(clockOffBean.getQuestion());
+//                        oldClockOffBean.setSimilarQuestion(clockOffBean.getSimilarQuestion());
+//                        oldClockOffBean.setType(clockOffBean.getType());
+//                        updateList.add(oldClockOffBean);
+//                        break;
+//                    }
+//                }
+//                if (i == clockOffBeans.size()) {
+//                    insertList.add(clockOffBean);
+//                }
+//            }
+//            if (insertList.size() > 0) {
+//                GLog.e("DBManager", "insertList.size(): "+ insertList.size());
+//                clockOffBeanDao.insertInTx(insertList);
+//            }
+//            if (updateList.size() > 0) {
+//                GLog.e("DBManager", "updateList.size(): "+ updateList.size());
+//                clockOffBeanDao.updateInTx(updateList);
+//            }
+//            return;
+//        }
+        clockOffBeanDao.insertInTx(clockOffBeanList);
     }
 
     /**
-     * 删除NativeQuestionBean (暂时不用删除)
+     * 删除clockOffBean (暂时不用删除)
      */
-    public void deleteNativeQuestionBean(String name) {
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+    public void deleteclockOffBean(String name) {
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-//        List<NativeQuestionBean> nativeQuestionBeans = nativeQuestionBeanDao.queryBuilder().where(NativeQuestionBeanDao.Properties.Name.eq(name)).build().list();
-//        nativeQuestionBeanDao.deleteInTx(nativeQuestionBeans);
+//        List<ClockOffBean> clockOffBeans = clockOffBeanDao.queryBuilder().where(ClockOffBeanDao.Properties.Name.eq(name)).build().list();
+//        clockOffBeanDao.deleteInTx(clockOffBeans);
     }
 
     /**
-     * 删除NativeQuestionBean全部数据
+     * 删除clockOffBean全部数据
      */
-    public void deleteNativeQuestionBean() {
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+    public void deleteclockOffBean() {
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-        nativeQuestionBeanDao.deleteAll();
+        clockOffBeanDao.deleteAll();
     }
 
     /**
-     * 更新NativeQuestionBean (暂时不用更新)
+     * 更新clockOffBean (暂时不用更新)
      */
-    public void updateNativeQuestionBean(String name, String parentValue) {
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+    public void updateclockOffBean(String name, String parentValue) {
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
         //一句话查询
-//        List<NativeQuestionBean> nativeQuestionBeans = nativeQuestionBeanDao.queryBuilder().where(NativeQuestionBeanDao.Properties.Name.eq(name)).build().list();
-//        for (int i = 0; i < nativeQuestionBeans.size(); i++) {
-//            final NativeQuestionBean nativeQuestionBean = nativeQuestionBeans.get(i);
-//            nativeQuestionBean.setId(nativeQuestionBean.getId());
-//            nativeQuestionBean.setParent(parentValue);
-//            nativeQuestionBeanDao.update(nativeQuestionBean);
+//        List<ClockOffBean> clockOffBeans = clockOffBeanDao.queryBuilder().where(ClockOffBeanDao.Properties.Name.eq(name)).build().list();
+//        for (int i = 0; i < clockOffBeans.size(); i++) {
+//            final ClockOffBean clockOffBean = clockOffBeans.get(i);
+//            clockOffBean.setId(clockOffBean.getId());
+//            clockOffBean.setParent(parentValue);
+//            clockOffBeanDao.update(clockOffBean);
 //        }
     }
 
     /**
-     * 查询NativeQuestionBean (根据 similarQuestion)
+     * 查询clockOffBean (根据 name)
      */
-    public List<NativeQuestionBean> queryNativeQuestionBeanList(String similarQuestion) {
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+    public List<ClockOffBean> queryclockOffBeanList(String name) {
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-        QueryBuilder<NativeQuestionBean> qb = nativeQuestionBeanDao.queryBuilder();
-        qb.where(NativeQuestionBeanDao.Properties.SimilarQuestion.eq(similarQuestion)).orderDesc(NativeQuestionBeanDao.Properties.Id);
-        List<NativeQuestionBean> list = qb.list();
+        QueryBuilder<ClockOffBean> qb = clockOffBeanDao.queryBuilder();
+        qb.where(ClockOffBeanDao.Properties.Name.eq(name)).orderDesc(ClockOffBeanDao.Properties.Id);
+        List<ClockOffBean> list = qb.list();
         return list;
     }
 
     /**
-     * 查询NativeQuestionBean 返回全部数据
+     * 查询clockOffBean 返回全部数据
      */
-    public List<NativeQuestionBean> queryNativeQuestionBeanList() {
-        if (nativeQuestionBeanDao == null) {
-            newNativeQuestionBeanDao();
+    public List<ClockOffBean> queryclockOffBeanList() {
+        if (clockOffBeanDao == null) {
+            newClockOffBeanDao();
         }
-        QueryBuilder<NativeQuestionBean> qb = nativeQuestionBeanDao.queryBuilder();
-        List<NativeQuestionBean> list = qb.list();
+        QueryBuilder<ClockOffBean> qb = clockOffBeanDao.queryBuilder();
+        List<ClockOffBean> list = qb.list();
         return list;
     }
 
@@ -191,20 +183,20 @@ public class DBManager {
     public synchronized void closeDB() {
         if (openHelper != null) {
             openHelper.close();
-            nativeQuestionBeanDao = null;
+            clockOffBeanDao = null;
         }
     }
 
     /**
-     * 获取 nativeQuestionBeanDao 实例
+     * 获取 clockOffBeanDao 实例
      */
-    private void newNativeQuestionBeanDao() {
-        if (nativeQuestionBeanDao == null) {
+    private void newClockOffBeanDao() {
+        if (clockOffBeanDao == null) {
             synchronized (this) {
-                if (nativeQuestionBeanDao == null) {
+                if (clockOffBeanDao == null) {
                     DaoMaster DaoMaster = new DaoMaster(getWritableDatabase());
                     DaoSession daoSession = DaoMaster.newSession();
-                    nativeQuestionBeanDao = daoSession.getNativeQuestionBeanDao();
+                    clockOffBeanDao = daoSession.getClockOffBeanDao();
                 }
             }
         }
@@ -233,113 +225,9 @@ public class DBManager {
     }
 
     /**
-     * 用来获取本地问答库数据
-     * 精确度等级 accuracy 最后输出最高精确度的答案
-     *
-     * 可修改参数： minValue 0-1
+     * 打卡工具类
      */
-    public static class NativeQuestionHelper {
+    public static class ClockOffHelper {
 
-        private float minValue = 0.95f;
-
-        public List<NativeQuestionBean> nativeQuestionBeanList;
-        private StringBuilder sb =  new StringBuilder();
-
-        public NativeQuestionHelper(Context context, float minValue) {
-            nativeQuestionBeanList = DBManager.getInstance(context).queryNativeQuestionBeanList();
-            if (minValue >= 0) {
-                this.minValue = minValue;
-            }
-        }
-
-        /**
-         * 返回命中匹配字符串 otherwise null
-         * @param content
-         * @return
-         */
-        public String answer(String content) {
-            float minValue = this.minValue;
-            String cut = reduceContent(content);
-            MyLog.e("ChatActivity", "nativeQuestionBeanList.size(): " + nativeQuestionBeanList.size());
-            float value;
-            int accuracy = 0;
-            NativeQuestionBean answerBean = null;
-
-            for (NativeQuestionBean nativeQuestionBean : nativeQuestionBeanList) {
-                //如果答案为空就跳过
-                if (TextUtils.isEmpty(nativeQuestionBean.getAnswer())) {
-                    continue;
-                }
-
-                value = Constant.getSimilarityRatio(content, nativeQuestionBean.getSimilarQuestion());
-
-                //等级3 语音输入的字符串简单移除首位标点后与库匹配
-                if (value > minValue) {
-                    Log.e("lawPush4Android", "本地数据库匹配分值: "+value );
-                    MyLog.e("ChatActivity", "value: " + value + " level: 3");
-                    MyLog.e("ChatActivity", "getSimilarQuestion: " + nativeQuestionBean.getSimilarQuestion());
-                    MyLog.e("ChatActivity", "getAnswer(): " + nativeQuestionBean.getAnswer());
-                    answerBean = nativeQuestionBean;
-                    minValue = value;
-                    accuracy = 3;
-                }
-
-                //如果精简后太短就跳过
-                if (cut == null) {
-                    continue;
-                }
-                //如果已经有更高等级匹配就跳过
-                if (accuracy == 3) {
-                    continue;
-                }
-                //等级2
-                int value2 = Constant.getEditDistance(cut, nativeQuestionBean.getSimilarQuestion());
-                if (value2 == nativeQuestionBean.getSimilarQuestion().length() - cut.length()) {
-                    MyLog.e("ChatActivity", "value2: " + value2 + " level: 2");
-                    MyLog.e("ChatActivity", "getSimilarQuestion: " + nativeQuestionBean.getSimilarQuestion());
-                    MyLog.e("ChatActivity", "getAnswer(): " + nativeQuestionBean.getAnswer());
-                    answerBean = nativeQuestionBean;
-                    accuracy = 2;
-                    break;
-                }
-            }
-            if (accuracy > 0) {
-                Random random = newRandom();
-                String[] answers = answerBean.getAnswer().split(divider);
-                int r = random.nextInt(answers.length);
-                return answers[r];
-            }
-            return null;
-        }
-
-        /**
-         * 精简用户语音输入的字符串 且必须大于一定长度 提高容错率
-         */
-        private String reduceContent(String content) {
-            sb.setLength(0);
-            char[] chars = content.toCharArray();
-            for (char aChar : chars) { //在、叫、是
-                if (aChar == '谁' || aChar == '我' || aChar == '你' || aChar == '们'
-                        || aChar == '的' || aChar == '吗' || aChar == '知' || aChar == '道'
-                        || aChar == '什' || aChar == '么' || aChar == '了' || aChar == '解'
-                        || aChar == '做' || aChar == '怎' || aChar == '可' || aChar == '以'
-                        || aChar == '哪' || aChar == '这' || aChar == '里' || aChar == '那'
-                        || aChar == '去' || aChar == '来' || aChar == '呀' || aChar == '些'
-                        || aChar == '啊' || aChar == '给' || aChar == '没' || aChar == '有'
-                        || aChar == '能' || aChar == '不' || aChar == '啥'
-                        || aChar == '，' || aChar == ',' || aChar == '?'
-                        || aChar == '？' || aChar == '!' || aChar == '！' || aChar == '.'
-                        || aChar == '。'
-                        ) {
-                    continue;
-                }
-                sb.append(aChar);
-            }
-            MyLog.e("ChatActivity", "sb: " + sb);
-            if (sb.length() > 4) {
-                return sb.toString();
-            }
-            return null;
-        }
     }
 }

@@ -2,7 +2,7 @@ package org.caworks.library.parser;
 
 import android.util.Log;
 
-import com.aegis.mobile.library.util.util.GLog;
+import org.caworks.library.util.GLog;
 
 /**
  * 基本日志打印，可以打印大String

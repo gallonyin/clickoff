@@ -7,11 +7,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.Menu
-import org.caworks.clockoff.Base.BaseFragment
+import org.caworks.library.base.BaseFragment
 import org.caworks.clockoff.Base.MineFragment
 import org.caworks.clockoff.R
 import org.caworks.library.base.BaseActivity
-import org.caworks.library.util.GLog
 import java.util.ArrayList
 
 class MainActivity : BaseActivity() {

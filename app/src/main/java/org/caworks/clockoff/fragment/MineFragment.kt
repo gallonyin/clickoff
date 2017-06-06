@@ -1,9 +1,12 @@
 package org.caworks.clockoff.Base
 
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import org.caworks.clockoff.R
+import org.caworks.clockoff.adapter.MineAdapter
 import org.caworks.clockoff.entity.greendao.ClockOffBean
 import org.caworks.clockoff.entity.greendao.DBManager
+import org.caworks.library.base.BaseFragment
 import org.caworks.library.util.GLog
 import java.util.ArrayList
 
@@ -12,6 +15,9 @@ import java.util.ArrayList
  */
 class MineFragment : BaseFragment() {
 
+    lateinit var rv_mine: RecyclerView
+    val list = ArrayList<ClockOffBean>()
+
     override fun getLayoutResId(): Int {
         return R.layout.fragment_mine
     }
@@ -19,6 +25,8 @@ class MineFragment : BaseFragment() {
     override fun initView(viewRoot: View) {
         viewRoot.findViewById(R.id.bt_insert).setOnClickListener { insert() }
         viewRoot.findViewById(R.id.bt_query).setOnClickListener { query() }
+        rv_mine = viewRoot.findViewById(R.id.rv_mine) as RecyclerView
+        rv_mine.adapter = MineAdapter(mContext, list, R.layout.item_mine_habit)
     }
 
     fun insert() {
@@ -32,10 +40,13 @@ class MineFragment : BaseFragment() {
 
     fun query() {
         GLog.e()
-        val queryclockOffBeanList1 = DBManager.getInstance(mContext).queryclockOffBeanList("测试名称")
-        GLog.e(queryclockOffBeanList1)
+//        val queryclockOffBeanList1 = DBManager.getInstance(mContext).queryclockOffBeanList("测试名称")
+//        GLog.e(queryclockOffBeanList1)
         val queryclockOffBeanList = DBManager.getInstance(mContext).queryclockOffBeanList()
         GLog.e(queryclockOffBeanList)
+        list.clear()
+        list.addAll(queryclockOffBeanList)
+        rv_mine.adapter.notifyDataSetChanged()
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
  * Created by gallon on 2017/5/18.
  */
 
-public abstract class SimpleAdapter<T> extends RecyclerView.Adapter<RvViewHolder> {
+public abstract class SimpleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     protected LayoutInflater mInflater;
     public List<T> mData;
@@ -45,14 +45,14 @@ public abstract class SimpleAdapter<T> extends RecyclerView.Adapter<RvViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final RvViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         convert(holder, mData.get(holder.getLayoutPosition()), position);
         setUpItemEvent(holder);
     }
 
-    public abstract void convert(RvViewHolder holder, T bean, int position);
+    public abstract void convert(ViewHolder holder, T bean, int position);
 
-    public void setUpItemEvent(final RvViewHolder holder) {
+    public void setUpItemEvent(final ViewHolder holder) {
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,13 +74,13 @@ public abstract class SimpleAdapter<T> extends RecyclerView.Adapter<RvViewHolder
     }
 
     @Override
-    public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RvViewHolder viewHolder = onCreateDefViewHolder(parent, viewType);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = onCreateDefViewHolder(parent, viewType);
         return viewHolder;
     }
 
-    protected RvViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
-        return new RvViewHolder(mInflater.inflate(mlayoutId, parent, false));
+    protected ViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(mInflater.inflate(mlayoutId, parent, false));
     }
 
     public void addData(int pos, T datas) {

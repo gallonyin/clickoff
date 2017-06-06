@@ -7,6 +7,6 @@ package org.caworks.library.base;
 
 public interface MultiItemEntity {
 
-    int getItemType();
+    int getType();
 
 }

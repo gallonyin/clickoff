@@ -17,7 +17,7 @@ import java.util.List;
  * Created by gallon on 2017/5/19.
  */
 
-public abstract class MultiAdapter<T extends MultiItemEntity> extends RvSimpleAdapter<T> {
+public abstract class MultiAdapter<T extends MultiItemEntity> extends SimpleAdapter<T> {
 
     private SparseArray<Integer> layouts;
 
@@ -35,9 +35,9 @@ public abstract class MultiAdapter<T extends MultiItemEntity> extends RvSimpleAd
     }
 
     @Override
-    protected RvViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
+    protected ViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
         GLog.e("viewType: " + viewType);
-        return new RvViewHolder(mInflater.inflate(layouts.get(viewType), parent, false));
+        return new ViewHolder(mInflater.inflate(layouts.get(viewType), parent, false));
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class MultiAdapter<T extends MultiItemEntity> extends RvSimpleAd
     }
 
     @Override
-    public void convert(RvViewHolder holder, T bean, int position) {
+    public void convert(ViewHolder holder, T bean, int position) {
 
     }
 }

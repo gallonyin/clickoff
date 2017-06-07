@@ -109,7 +109,11 @@ public class GLog {
     }
 
     public static void e(String tag, Object... objects) {
-        printLog(E, tag, objects);
+        if (objects.length == 0) {
+            printLog(E, null, tag);
+        } else {
+            printLog(E, tag, objects);
+        }
     }
 
     public static void a() {

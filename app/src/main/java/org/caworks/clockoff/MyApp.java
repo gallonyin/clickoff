@@ -7,4 +7,12 @@ import android.app.Application;
  */
 
 public class MyApp extends Application {
+
+    public static Application APP;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        APP = this;
+    }
 }

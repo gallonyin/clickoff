@@ -12,7 +12,7 @@ import org.caworks.library.util.GLog
 import java.util.ArrayList
 
 /**
- * Created by Gallon on 2017/6/1.
+ * Created by Gallon on 2017/6/1
  */
 class MineFragment : BaseFragment() {
 
@@ -24,14 +24,21 @@ class MineFragment : BaseFragment() {
     }
 
     override fun initView(viewRoot: View) {
-        viewRoot.findViewById(R.id.bt_insert).setOnClickListener { insert() }
-        viewRoot.findViewById(R.id.bt_query).setOnClickListener { query() }
+        viewRoot.findViewById(R.id.bt_insert).setOnClickListener { newTask() }
         rv_mine = viewRoot.findViewById(R.id.rv_mine) as RecyclerView
         rv_mine.layoutManager = LinearLayoutManager(mContext)
         rv_mine.adapter = MineAdapter(mContext, list, R.layout.item_mine_habit)
     }
 
-    fun insert() {
+    override fun onResume() {
+        super.onResume()
+        query()
+    }
+
+    /**
+     * 新建任务
+     */
+    fun newTask() {
         GLog.e()
         val clockOffBeanList = ArrayList<ClockOffBean>()
         val clockOffBean = ClockOffBean(null, "测试名称2", "测试描述", "", "开始时间", "提醒时间", "记录时间", 1, 1)
@@ -40,14 +47,13 @@ class MineFragment : BaseFragment() {
         DBManager.getInstance(mContext).insertclockOffBeanList(clockOffBeanList, true)
     }
 
+    /**
+     * 查询 更新集合
+     */
     fun query() {
-//        val queryclockOffBeanList1 = DBManager.getInstance(mContext).queryclockOffBeanList("测试名称")
-//        GLog.e(queryclockOffBeanList1)
-        val queryclockOffBeanList = DBManager.getInstance(mContext).queryclockOffBeanList()
-        GLog.e(queryclockOffBeanList)
-//        list.clear()
-//        queryclockOffBeanList.forEach { list.add(it) }
-        list.addAll(queryclockOffBeanList)
+        val queryClockOffBeanList = DBManager.getInstance(mContext).queryclockOffBeanList()
+        list.clear()
+        list.addAll(queryClockOffBeanList)
         rv_mine.adapter.notifyDataSetChanged()
     }
 

@@ -136,12 +136,13 @@ public class DBManager {
     }
 
     /**
-     * 更新clockOffBean (暂时不用更新)
+     * 更新clockOffBean
      */
-    public void updateclockOffBean(String name, String parentValue) {
+    public void updateclockOffBean(ClockOffBean clockOffBean) {
         if (clockOffBeanDao == null) {
             newClockOffBeanDao();
         }
+        clockOffBeanDao.update(clockOffBean);
         //一句话查询
 //        List<ClockOffBean> clockOffBeans = clockOffBeanDao.queryBuilder().where(ClockOffBeanDao.Properties.Name.eq(name)).build().list();
 //        for (int i = 0; i < clockOffBeans.size(); i++) {

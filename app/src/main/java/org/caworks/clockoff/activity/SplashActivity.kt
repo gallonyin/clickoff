@@ -2,6 +2,7 @@ package org.caworks.clockoff.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 
 import org.caworks.clockoff.R
 
@@ -11,6 +12,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        findViewById(R.id.activity_main).setOnClickListener { MainActivity.Companion.enterActivity(this) }
+        Handler().postDelayed({ MainActivity.enterActivity(this) }, 1500)
+
+        findViewById(R.id.activity_main).setOnClickListener { MainActivity.enterActivity(this) }
     }
 }

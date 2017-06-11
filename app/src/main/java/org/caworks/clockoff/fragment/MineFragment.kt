@@ -3,14 +3,14 @@ package org.caworks.clockoff.Base
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.CalendarView
 import org.caworks.clockoff.R
+import org.caworks.clockoff.activity.TaskDetailActivity
 import org.caworks.clockoff.adapter.MineAdapter
 import org.caworks.clockoff.entity.greendao.ClockOffBean
 import org.caworks.clockoff.entity.greendao.DBManager
 import org.caworks.library.base.BaseFragment
 import org.caworks.library.util.GLog
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Gallon on 2017/6/1
@@ -42,10 +42,10 @@ class MineFragment : BaseFragment() {
     fun newTask() {
         GLog.e()
         val clockOffBeanList = ArrayList<ClockOffBean>()
-        val clockOffBean = ClockOffBean(null, "测试名称2", "测试描述", "", "开始时间", "提醒时间", "记录时间", 1, 1)
-        clockOffBeanList.add(clockOffBean)
-
-        DBManager.getInstance(mContext).insertclockOffBeanList(clockOffBeanList, true)
+//        val clockOffBean = ClockOffBean(null, "测试名称2", "测试描述", "", "开始时间", "提醒时间", "记录时间", 1, 1)
+//        clockOffBeanList.add(clockOffBean)
+//        DBManager.getInstance(mContext).insertclockOffBeanList(clockOffBeanList, true)
+        TaskDetailActivity.enterActivity(mContext, null)
     }
 
     /**

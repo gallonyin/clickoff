@@ -203,8 +203,8 @@
             android:text="打卡记录"
             android:textSize="18sp" />
 
-        <EditText
-            android:id="@+id/et_record"
+        <TextView
+            android:id="@+id/tv_record"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
@@ -241,7 +241,7 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:background="#ddd"
-            android:hint="complete"
+            android:text="0"
             android:padding="5dp"
             android:textSize="@dimen/small_text_size" />
 

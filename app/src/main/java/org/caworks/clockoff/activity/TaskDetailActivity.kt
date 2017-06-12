@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.CalendarView
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
@@ -26,7 +27,7 @@ class TaskDetailActivity : BaseActivity() {
     lateinit var et_note: EditText
     lateinit var tv_start: TextView
     lateinit var et_remind: EditText
-    lateinit var et_record: EditText
+    lateinit var tv_record: TextView
     lateinit var et_complete: EditText
     lateinit var et_repair: EditText
     lateinit var tv_save: TextView
@@ -64,7 +65,13 @@ class TaskDetailActivity : BaseActivity() {
             setText(clockOffBean?.name)
         }
         et_desc = findViewById(R.id.et_desc) as EditText
+        et_desc.run {
+            setText(clockOffBean?.desc)
+        }
         et_note = findViewById(R.id.et_note) as EditText
+        et_note.run {
+            setText(clockOffBean?.note)
+        }
         tv_start = findViewById(R.id.tv_start) as TextView
         tv_start.run {
             setOnClickListener { startTime() }
@@ -72,11 +79,17 @@ class TaskDetailActivity : BaseActivity() {
             text = if (clockOffBean == null) "${split[0]}年${split[1]}月${split[2]}日" else clockOffBean!!.start
         }
         et_remind = findViewById(R.id.et_remind) as EditText
-        et_record = findViewById(R.id.et_record) as EditText
+        tv_record = findViewById(R.id.tv_record) as TextView
+        tv_record.setOnClickListener { showRecord() }
         et_complete = findViewById(R.id.et_complete) as EditText
+        et_complete.run {
+            if (clockOffBean == null) setText("0") else setText(clockOffBean!!.complete)
+        }
         et_repair = findViewById(R.id.et_repair) as EditText
+        et_repair.run {
+            if (clockOffBean == null) setText("0") else setText(clockOffBean!!.repair)
+        }
         tv_save = findViewById(R.id.tv_save) as TextView
-        tv_cancel = findViewById(R.id.tv_cancel) as TextView
         tv_save.setOnClickListener {
             if (clockOffBean == null) clockOffBean = ClockOffBean()
             clockOffBean!!.name = et_name.text.toString()
@@ -84,7 +97,7 @@ class TaskDetailActivity : BaseActivity() {
             clockOffBean!!.note = et_note.text.toString()
             clockOffBean!!.start = tv_start.text.toString()
             clockOffBean!!.remind = et_remind.text.toString()
-            clockOffBean!!.record = et_record.text.toString()
+            clockOffBean!!.record = tv_record.text.toString()
             clockOffBean!!.complete = et_complete.text.toString() //需要选择时间
             clockOffBean!!.repair = et_repair.text.toString()
             if (clockOffBean!!.id == null) {
@@ -95,7 +108,38 @@ class TaskDetailActivity : BaseActivity() {
             CustomToast.showToast(mContext, "保存成功")
             onBackPressed()
         }
+        tv_cancel = findViewById(R.id.tv_cancel) as TextView
         tv_cancel.setOnClickListener { onBackPressed() }
+    }
+
+    private fun showRecord() {
+        CustomToast.showToast(mContext, "显示打卡记录")
+        val dialog = Dialog(this)
+        val window = dialog.window
+        val calendarView = CalendarView(this)
+
+
+        val datePicker = DatePicker(this)
+        datePicker.run {
+            //            val split = TimeUtils.date2String(Date(System.currentTimeMillis()), SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())).split("-")
+            val split = CheckUtil.splitDate(tv_start.text.toString())
+            GLog.e(split)
+            init(split[0].toInt(), split[1].toInt() - 1, split[2].toInt(), { view, year, monthOfYear, dayOfMonth ->
+                if (CheckUtil.isOvertime(year, monthOfYear, dayOfMonth)) {
+                    CustomToast.showToast(mContext, "开始时间不能超过今天啊喂！")
+                    return@init
+                }
+                GLog.e("year: " + year)
+                GLog.e("monthOfYear: " + monthOfYear)
+                GLog.e("dayOfMonth: " + dayOfMonth)
+                CustomToast.showToast(mContext, "选择成功 ${year}年${monthOfYear + 1}月${dayOfMonth}日")
+                tv_start.setText("${year}年${monthOfYear + 1}月${dayOfMonth}日")
+                dialog.dismiss()
+            })
+        }
+        window.setContentView(datePicker)
+        window.setLayout((MyApp.SCREEN_WIDTH * 0.9).toInt(), (MyApp.SCREEN_HEIGHT * 0.9).toInt())
+        dialog.show()
     }
 
     private fun startTime() {
@@ -106,7 +150,7 @@ class TaskDetailActivity : BaseActivity() {
             //            val split = TimeUtils.date2String(Date(System.currentTimeMillis()), SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())).split("-")
             val split = CheckUtil.splitDate(tv_start.text.toString())
             GLog.e(split)
-            init(split[0].toInt(), split[1].toInt() - 1, split[2].toInt(), { view, year, monthOfYear, dayOfMonth ->
+            init(split[0], split[1] - 1, split[2], { view, year, monthOfYear, dayOfMonth ->
                 if (CheckUtil.isOvertime(year, monthOfYear, dayOfMonth)) {
                     CustomToast.showToast(mContext, "开始时间不能超过今天啊喂！")
                     return@init

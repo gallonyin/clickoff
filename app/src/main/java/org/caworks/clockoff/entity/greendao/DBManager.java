@@ -3,10 +3,8 @@ package org.caworks.clockoff.entity.greendao;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.caworks.library.util.GLog;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class DBManager {
         if (mInstance == null) {
             synchronized (DBManager.class) {
                 if (mInstance == null) {
-                    mInstance = new DBManager(context);
+                    mInstance = new DBManager(context.getApplicationContext());
                 }
             }
         }
